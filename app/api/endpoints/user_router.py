@@ -5,6 +5,10 @@ from app.core.database import get_db
 from app.schemas.user import User, UserCreate
 from app.services import user_services
 
+from typing import Annotated
+from app.schemas.user import User, UserCreate
+from app.services import user_services
+
 router = APIRouter()
 
 @router.post("/", response_model=User, status_code=status.HTTP_201_CREATED, summary="Cria um novo usuário")
@@ -25,3 +29,10 @@ def create_user_endpoint(user: UserCreate, db: Session = Depends(get_db)):
             detail="Email já registrado",
         )
     return user_services.create_user(db=db, user=user)
+
+@router.get("/me", response_model=User, summary="Obtém os dados do usuário autenticado")
+def read_users_me(current_user: Annotated[User, Depends(user_services.get_current_user)]):
+    """
+    Retorna os dados do usuário que está fazendo a requisição (autenticado).
+    """
+    return current_user

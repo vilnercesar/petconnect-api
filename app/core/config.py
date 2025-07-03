@@ -1,4 +1,5 @@
 # app/core/config.py
+#carregar as variaveis de ambiente
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
