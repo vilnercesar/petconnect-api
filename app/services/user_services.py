@@ -17,6 +17,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Annotated
 from app.core.database import get_db
 
+from app.schemas.token import TokenData
+from app.models.user import User, UserRole, UserStatus 
+
 # Configuração para o hashing de senhas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -68,6 +71,62 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session 
     )
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        token_data = TokenData(email=payload.get("sub"), role=payload.get("role"))
+
+        if token_data.email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user = get_user_by_email(db, email=token_data.email)
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+def require_active_user(
+    current_user: Annotated[User, Depends(get_current_user)]
+) -> User:
+    """
+    Dependência que verifica se o usuário autenticado tem o status 'ativo'.
+    """
+    if current_user.status != UserStatus.ATIVO:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sua conta precisa ser validada por um administrador para realizar esta ação."
+        )
+    return current_user
+
+def require_admin_user(
+    current_user: Annotated[User, Depends(get_current_user)]
+) -> User:
+    """
+    Dependência que verifica se o usuário autenticado tem o papel 'admin'.
+    """
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Apenas administradores podem realizar esta ação."
+        )
+    return current_user
+
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/auth/token", auto_error=False)
+async def get_current_user_or_none(token: Annotated[str | None, Depends(oauth2_scheme_optional)] = None, db: Session = Depends(get_db)) -> User | None:
+    """
+    Dependência opcional: retorna o usuário se o token for válido,
+    ou None se nenhum token for fornecido. Levanta exceção para tokens inválidos.
+    """
+    if token is None:
+        return None # Agora esta linha será alcançada se não houver token
+    
+    # ... (o resto da função continua igual) ...
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Não foi possível validar as credenciais",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         email: str | None = payload.get("sub")
         if email is None:
             raise credentials_exception
@@ -78,3 +137,29 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session 
     if user is None:
         raise credentials_exception
     return user
+
+def require_active_user(
+    current_user: Annotated[User, Depends(get_current_user)]
+) -> User:
+    """
+    Dependência que verifica se o usuário autenticado tem o status 'ativo'.
+    """
+    if current_user.status != UserStatus.ATIVO:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sua conta precisa ser validada por um administrador para realizar esta ação."
+        )
+    return current_user
+
+def require_admin_user(
+    current_user: Annotated[User, Depends(get_current_user)]
+) -> User:
+    """
+    Dependência que verifica se o usuário autenticado tem o papel 'admin'.
+    """
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Apenas administradores podem realizar esta ação."
+        )
+    return current_user

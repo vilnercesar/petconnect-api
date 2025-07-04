@@ -1,11 +1,7 @@
 # app/schemas/user.py
 from pydantic import BaseModel, EmailStr
-from enum import Enum
+from app.models.user import UserRole, UserStatus
 
-class UserRole(str, Enum):
-    CLIENTE = "cliente"
-    COLABORADOR = "colaborador"
-    ADMIN = "admin"
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -18,8 +14,8 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: bool
     role: UserRole
+    status: UserStatus 
 
     class Config:
         orm_mode = True

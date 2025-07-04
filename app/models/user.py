@@ -1,7 +1,19 @@
 # app/models/user.py
+import enum
 from sqlalchemy import Boolean, Column, Integer, String, Enum as SAEnum
 from ..core.database import Base
-from app.schemas.user import UserRole
+
+class UserRole(str, enum.Enum):
+    CLIENTE = "cliente"
+    COLABORADOR = "colaborador"
+    ADMIN = "admin"
+
+
+class UserStatus(str, enum.Enum):
+    PENDENTE = "pendente"
+    ATIVO = "ativo"
+    INATIVO = "inativo"
+    REJEITADO = "rejeitado"
 
 class User(Base):
     __tablename__ = "users"
@@ -12,4 +24,4 @@ class User(Base):
     telefone = Column(String)
     hashed_password = Column(String, nullable=False)
     role = Column(SAEnum(UserRole), nullable=False, default=UserRole.CLIENTE)
-    is_active = Column(Boolean, default=True)
+    status = Column(SAEnum(UserStatus), nullable=False, default=UserStatus.PENDENTE)
