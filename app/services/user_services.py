@@ -18,10 +18,16 @@ from typing import Annotated
 from app.core.database import get_db
 
 from app.schemas.token import TokenData
-from app.models.user import User, UserRole, UserStatus 
+from app.models.user import User as UserModel, UserRole, UserStatus 
 
 # Configuração para o hashing de senhas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_all_users(db: Session) -> list[UserModel]:
+    """
+    Retorna todos os usuários cadastrados no banco de dados.
+    """
+    return db.query(UserModel).all()
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
@@ -163,3 +169,14 @@ def require_admin_user(
             detail="Acesso negado. Apenas administradores podem realizar esta ação."
         )
     return current_user
+
+def delete_user_by_id(db: Session, user_id: int) -> UserModel | None:
+    """
+    Deleta um usuário do banco de dados pelo seu ID.
+    Retorna o usuário deletado ou None se não for encontrado.
+    """
+    db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if db_user:
+        db.delete(db_user)
+        db.commit()
+    return db_user

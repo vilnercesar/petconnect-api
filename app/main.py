@@ -1,7 +1,7 @@
 # app/main.py
 from fastapi import FastAPI
 from app.core.database import engine, Base
-from app.api.endpoints import user_router, auth_router
+from app.api.endpoints import user_router, auth_router, admin_router
 
 # Cria as tabelas no banco de dados (apenas para desenvolvimento)
 Base.metadata.create_all(bind=engine)
@@ -20,3 +20,5 @@ def read_root():
 app.include_router(auth_router.router, prefix="/auth", tags=["Authentication"])
 # Inclui as rotas de usuário
 app.include_router(user_router.router, prefix="/users", tags=["Users"])
+# Roteador com as rotas de administração de usuários
+app.include_router(admin_router.router, prefix="/users", tags=["Admin Management"])

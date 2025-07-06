@@ -44,17 +44,3 @@ def create_user_endpoint(
 def read_users_me(current_user: Annotated[UserModel, Depends(user_services.get_current_user)]):
     return current_user
 
-@router.patch("/{user_id}/approve", response_model=UserSchema, summary="Aprova o cadastro de um usuário")
-def approve_user(
-    user_id: int,
-    admin_user: Annotated[UserModel, Depends(user_services.require_admin_user)],
-    db: Session = Depends(get_db)
-):
-    db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
-    if db_user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
-    
-    db_user.status = UserStatus.ATIVO
-    db.commit()
-    db.refresh(db_user)
-    return db_user
