@@ -19,7 +19,7 @@ from app.core.database import get_db
 
 from app.schemas.token import TokenData
 from app.models.user import User as UserModel, UserRole, UserStatus 
-
+from app.schemas.user import UserUpdate 
 # Configuração para o hashing de senhas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -180,3 +180,34 @@ def delete_user_by_id(db: Session, user_id: int) -> UserModel | None:
         db.delete(db_user)
         db.commit()
     return db_user
+
+def update_user(db: Session, db_user: UserModel, user_in: UserUpdate) -> UserModel:
+    """Atualiza os dados de um usuário no banco de dados."""
+    update_data = user_in.model_dump(exclude_unset=True)
+
+    if "email" in update_data and update_data["email"] != db_user.email:
+        if get_user_by_email(db, email=update_data["email"]):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Este e-mail já está sendo utilizado por outra conta."
+            )
+
+    for field, value in update_data.items():
+        setattr(db_user, field, value)
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def change_user_password(db: Session, db_user: UserModel, current_password: str, new_password: str) -> bool:
+    """Verifica a senha atual e, se correta, atualiza para a nova senha."""
+    if not verify_password(current_password, db_user.hashed_password):
+        return False
+
+    new_hashed_password = pwd_context.hash(new_password)
+    db_user.hashed_password = new_hashed_password
+    db.add(db_user)
+    db.commit()
+    return True
