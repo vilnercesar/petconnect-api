@@ -20,6 +20,7 @@ from app.core.database import get_db
 from app.schemas.token import TokenData
 from app.models.user import User as UserModel, UserRole, UserStatus 
 from app.schemas.user import UserUpdate 
+
 # Configuração para o hashing de senhas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -116,6 +117,24 @@ def require_admin_user(
         )
     return current_user
 
+def require_collaborator_user(
+    current_user: Annotated[UserModel, Depends(get_current_user)]
+) -> UserModel:
+    """
+    Dependência que verifica se o usuário autenticado é um colaborador ativo.
+    """
+    if current_user.role != UserRole.COLABORADOR:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Apenas colaboradores podem realizar esta ação."
+        )
+    if current_user.status != UserStatus.ATIVO:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sua conta de colaborador precisa estar ativa para realizar esta ação."
+        )
+    return current_user
+
 oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/auth/token", auto_error=False)
 async def get_current_user_or_none(token: Annotated[str | None, Depends(oauth2_scheme_optional)] = None, db: Session = Depends(get_db)) -> User | None:
     """
@@ -123,9 +142,9 @@ async def get_current_user_or_none(token: Annotated[str | None, Depends(oauth2_s
     ou None se nenhum token for fornecido. Levanta exceção para tokens inválidos.
     """
     if token is None:
-        return None # Agora esta linha será alcançada se não houver token
+        return None 
     
-    # ... (o resto da função continua igual) ...
+ 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Não foi possível validar as credenciais",
@@ -170,6 +189,24 @@ def require_admin_user(
         )
     return current_user
 
+def require_collaborator_user(
+    current_user: Annotated[UserModel, Depends(get_current_user)]
+) -> UserModel:
+    """
+    Dependência que verifica se o usuário autenticado é um colaborador ativo.
+    """
+    if current_user.role != UserRole.COLABORADOR:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso negado. Apenas colaboradores podem realizar esta ação."
+        )
+    if current_user.status != UserStatus.ATIVO:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sua conta de colaborador precisa estar ativa para realizar esta ação."
+        )
+    return current_user
+
 def delete_user_by_id(db: Session, user_id: int) -> UserModel | None:
     """
     Deleta um usuário do banco de dados pelo seu ID.
@@ -211,3 +248,4 @@ def change_user_password(db: Session, db_user: UserModel, current_password: str,
     db.add(db_user)
     db.commit()
     return True
+

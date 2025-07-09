@@ -3,6 +3,7 @@
 import argparse
 from getpass import getpass
 from sqlalchemy.orm import Session
+from app import models
 from app.core.database import SessionLocal
 from app.services.user_services import create_user, get_user_by_email
 from app.schemas.user import UserCreate

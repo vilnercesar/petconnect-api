@@ -2,6 +2,7 @@
 import enum
 from sqlalchemy import Boolean, Column, Integer, String, Enum as SAEnum
 from ..core.database import Base
+from sqlalchemy.orm import relationship
 
 class UserRole(str, enum.Enum):
     CLIENTE = "cliente"
@@ -25,3 +26,5 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     role = Column(SAEnum(UserRole), nullable=False, default=UserRole.CLIENTE)
     status = Column(SAEnum(UserStatus), nullable=False, default=UserStatus.PENDENTE)
+    sent_requests = relationship("ServiceRequest", foreign_keys="[ServiceRequest.client_id]", back_populates="client")
+    received_requests = relationship("ServiceRequest", foreign_keys="[ServiceRequest.collaborator_id]", back_populates="collaborator")
