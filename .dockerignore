@@ -1,0 +1,19 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Ambiente Virtual
+venv/
+.venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Banco de dados local antigo e outros arquivos
+*.db
+*.sqlite3

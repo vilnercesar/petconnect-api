@@ -10,7 +10,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="PetConnect API",
-    description="API para o sistema de gerenciamento de Petshops e Clínicas Veterinárias.",
+    description="Uma API para a plataforma PetConnect, conectando tutores de pets a uma rede de colaboradores para serviços como pet sitter, hospedagem e passeios.",
     version="0.1.0",
 )
 

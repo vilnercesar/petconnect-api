@@ -23,4 +23,4 @@ class ServiceRequest(ServiceRequestBase):
     collaborator: User
 
     class Config:
-        orm_mode = True
+        from_attributes = True

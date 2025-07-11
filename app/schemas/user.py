@@ -19,7 +19,7 @@ class User(UserBase):
     status: UserStatus 
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserUpdate(BaseModel):
