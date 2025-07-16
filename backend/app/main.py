@@ -1,8 +1,6 @@
-# app/main.py
-
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware 
 from app import models
 from app.core.database import engine
 from app.api.endpoints import (
@@ -29,6 +27,18 @@ app = FastAPI(
     lifespan=lifespan  
 )
 
+origins = [
+    "http://localhost:5173", # Endereço padrão do frontend com Vite/React
+    "http://localhost:3000", # Outro endereço comum para desenvolvimento
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Permite todos os métodos (GET, POST, etc.)
+    allow_headers=["*"], # Permite todos os cabeçalhos
+)
 
 
 @app.get("/", tags=["Root"])
