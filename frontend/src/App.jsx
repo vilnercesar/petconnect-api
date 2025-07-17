@@ -1,21 +1,27 @@
+// frontend/src/App.jsx
 import React from 'react';
-import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { Services } from './components/Services';
-import { HowItWorks } from './components/HowItWorks';
-import { Footer } from './components/Footer';
+import { Routes, Route } from 'react-router-dom';
+
+import { LandingPage } from './pages/LandingPage';
+import { RegisterPage } from './pages/RegisterPage';
+import { LoginPage } from './pages/LoginPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { ProtectedRoute } from './components/ProtectedRoute'; // <-- A LINHA QUE FALTAVA
 
 function App() {
   return (
-    <div className="bg-gray-50 text-gray-800">
-      <Header />
-      <main>
-        <Hero />
-        <Services />
-        <HowItWorks />
-      </main>
-      <Footer />
-    </div>
+    <Routes>
+      {/* Rotas Públicas */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/cadastro" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
+
+      {/* Rotas Protegidas */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+       
+      </Route>
+    </Routes>
   );
 }
 
