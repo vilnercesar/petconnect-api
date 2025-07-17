@@ -1,21 +1,31 @@
+# docker-compose.yml
+
 services:
+  
   api:
-   
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-     
       - ./backend/app:/code/app
       - ./backend/create_admin.py:/code/create_admin.py
-  
     env_file:
       - ./.env
     depends_on:
       db:
         condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      
+      - "5173:80"
+    depends_on:
+      - api 
 
   db:
     image: postgres:15-alpine
