@@ -7,7 +7,7 @@ Uma API RESTful para a plataforma PetConnect, projetada para conectar tutores de
 ## 📖 Sobre o Projeto
 Este projeto contém a aplicação full-stack da plataforma PetConnect, incluindo uma API de backend construída com FastAPI e uma interface de frontend construída com React. O objetivo é criar um ecossistema completo onde clientes podem encontrar e contratar serviços para os seus pets, e colaboradores podem oferecer e gerir os seus serviços.
 
-[cite_start]O fluxo de requisitos do sistema foi baseado no seguinte diagrama de casos de uso. [cite: 1]
+O fluxo de requisitos do sistema foi baseado no seguinte diagrama de casos de uso.
 
 Para mais detalhes sobre cada parte da aplicação, consulte a documentação específica:
 * **[Documentação do Backend (API)](./backend/README.md)**
@@ -25,16 +25,17 @@ Para mais detalhes sobre cada parte da aplicação, consulte a documentação es
 A maneira recomendada para executar este projeto é usando o Docker, que orquestra todos os serviços (backend, frontend e banco de dados) de forma integrada.
 
 ### Pré-requisitos
-* **[Git](https://git-scm.com/)**: Para controlo de versão.
+* **[Git](https://git-scm.com/)**: Para controle de versão.
 * **[Python 3.12+](https://www.python.org/downloads/)**: Para o ambiente de desenvolvimento do backend e para executar os testes.
 * **[Node.js (LTS)](https://nodejs.org/)**: Para o ambiente de desenvolvimento do frontend.
-* **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**: Para executar a aplicação completa de forma containerizada (o método recomendado para desenvolvimento e produção).
+* **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**: Para executar a aplicação completa de forma containerizada.
+* **[PostgreSQL](https://www.postgresql.org/download/)**: Para rodar o banco de dados.
 
 ### Passos para a Execução
 
 1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/vilnercesar/petconnect-api.git
+    git clone https://github.com/vilnercesar/petconnect-project.git
     cd petconnect-project
     ```
 
