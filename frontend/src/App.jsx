@@ -11,6 +11,8 @@ import { ProfilePage } from './pages/ProfilePage';
 import { SecurityPage } from './pages/SecurityPage';
 import { MyRequestsPage } from './pages/MyRequestsPage';
 import { RequestServicePage } from './pages/RequestServicePage'; 
+import { CollaboratorRequestsPage } from './pages/CollaboratorRequestsPage';
+import { OngoingServicesPage } from './pages/OngoingServicesPage';
 function App() {
   return (
     <Routes>
@@ -27,6 +29,8 @@ function App() {
         <Route path="/perfil/seguranca" element={<SecurityPage />} />
         <Route path="/cliente/minhas-solicitacoes" element={<MyRequestsPage />} />
          <Route path="/cliente/solicitar-servico" element={<RequestServicePage />} />
+         <Route path="/colaborador/solicitacoes" element={<CollaboratorRequestsPage />} />
+         <Route path="/colaborador/servicos-aceitos" element={<OngoingServicesPage />} />
       </Route>
     </Routes>
   );
