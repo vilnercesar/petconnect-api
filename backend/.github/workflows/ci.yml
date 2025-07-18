@@ -4,14 +4,18 @@ name: PetConnect CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "feature/**"
+  
   pull_request:
     branches: [ "main" ]
+
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     env:
       SECRET_KEY: "a_secret_key_for_testing_purposes_only_123456"
       ALGORITHM: "HS256"
@@ -36,7 +40,6 @@ jobs:
           python -m pip install --upgrade pip
           # CORREÇÃO: Aponta para o requirements.txt dentro da pasta backend
           pip install -r backend/requirements.txt
-          pip install pytest httpx pytest-cov
 
       - name: Run tests with pytest
         run: pytest --cov=backend/app --cov-fail-under=70
