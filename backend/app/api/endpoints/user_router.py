@@ -91,3 +91,14 @@ def change_password_me(
         )
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/collaborators", response_model=list[UserSchema], summary="Lista todos os colaboradores ativos")
+def read_active_collaborators(
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(user_services.require_active_user)
+):
+    """
+    Retorna uma lista de todos os colaboradores com status 'ativo' no sistema.
+    """
+    return user_services.get_active_collaborators(db)

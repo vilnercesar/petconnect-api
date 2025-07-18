@@ -72,3 +72,15 @@ def refuse_request(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Solicitação de serviço não encontrada ou não pertence a você")
 
     return service_request_service.update_request_status(db, db_request, new_status=RequestStatusEnum.RECUSADO)
+
+
+@router.get("/my-requests", response_model=list[ServiceRequest], summary="Lista as solicitações feitas pelo cliente")
+def get_my_sent_requests(
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(user_services.require_active_user)
+):
+    """
+    Retorna uma lista de todas as solicitações de serviço feitas
+    pelo cliente autenticado.
+    """
+    return service_request_service.get_requests_by_client(db, client_id=current_user.id)

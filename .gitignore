@@ -1,43 +1,29 @@
-# Arquivos de Segredo e Variáveis de Ambiente
+# Backend
+backend/venv/
+backend/.venv/
+backend/__pycache__/
+backend/*.db
+backend/*.sqlite3
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
+
+# Arquivos de Segredo (Global)
 .env
 .env.*
 !.env.example
 
-# Ambientes Virtuais
-# A pasta venv contém as bibliotecas instaladas
-venv/
-.venv/
-env/
-.env/
-ENV/
-
-# Cache e arquivos compilados do Python
-
+# Cache e Relatórios de Teste (Global)
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Pastas de IDE e Editores de Código
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# Banco de dados local (SQLite)
-*.db
-*.sqlite
-*.sqlite3
-
-# Arquivos de sistema operacional
-.DS_Store
-Thumbs.db
-
-# Arquivos e pastas de testes
-
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Logs
-*.log
+# Arquivos de IDE e Sistema Operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
