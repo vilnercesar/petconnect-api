@@ -42,3 +42,8 @@ def update_request_status(db: Session, db_request: ServiceRequestModel, new_stat
     db.commit()
     db.refresh(db_request)
     return db_request
+
+def get_requests_by_client(db: Session, client_id: int) -> list[ServiceRequestModel]:
+    """Busca todas as solicitações feitas por um cliente específico."""
+    # Ordenamos pelas mais recentes primeiro
+    return db.query(ServiceRequestModel).filter(ServiceRequestModel.client_id == client_id).order_by(ServiceRequestModel.created_at.desc()).all()

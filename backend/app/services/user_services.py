@@ -249,3 +249,10 @@ def change_user_password(db: Session, db_user: UserModel, current_password: str,
     db.commit()
     return True
 
+def get_active_collaborators(db: Session) -> list[UserModel]:
+    """Retorna uma lista de todos os colaboradores com status 'ativo'."""
+    return db.query(UserModel).filter(
+        UserModel.role == UserRole.COLABORADOR,
+        UserModel.status == UserStatus.ATIVO
+    ).all()
+

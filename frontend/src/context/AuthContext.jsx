@@ -58,9 +58,14 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
     navigate('/login');
   };
-
+  const refreshUser = (updatedUserData) => {
+      setUser(prevUser => ({
+        ...prevUser,
+        ...updatedUserData,
+      }));
+  };
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, loading }}>
+    <AuthContext.Provider value={{ token, user, login, logout, loading,refreshUser  }}>
       {!loading && children}
     </AuthContext.Provider>
   );

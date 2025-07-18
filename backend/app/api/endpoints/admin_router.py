@@ -8,7 +8,8 @@ from app.core.database import get_db
 from app.models.user import User as UserModel, UserStatus
 from app.schemas.user import User as UserSchema
 from app.services import user_services
-
+from app.schemas.admin import Stats as StatsSchema 
+from app.services import admin_service 
 router = APIRouter()
 @router.get("/", response_model=list[UserSchema], summary="Lista todos os usuários do sistema")
 
@@ -87,3 +88,14 @@ def delete_user(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.get("/stats", response_model=StatsSchema, summary="Obtém estatísticas do sistema")
+def get_stats(
+    db: Session = Depends(get_db),
+    admin_user: UserModel = Depends(user_services.require_admin_user),
+):
+    """
+    Retorna estatísticas gerais sobre a plataforma.
+    Apenas administradores podem aceder a esta rota.
+    """
+    return admin_service.get_system_stats(db)

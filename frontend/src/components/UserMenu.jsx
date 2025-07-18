@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, User, LogOut, LayoutDashboard, KeyRound } from 'lucide-react';
 
 export const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +42,11 @@ export const UserMenu = () => {
               <User className="mr-3 h-5 w-5" /><span>Gerenciar Perfil</span>
             </Link>
             
+            {/* 2. ADICIONE O NOVO LINK AQUI */}
+            <Link to="/perfil/seguranca" onClick={() => setIsOpen(false)} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <KeyRound className="mr-3 h-5 w-5" /><span>Segurança da Conta</span>
+            </Link>
+
             <div className="border-t border-gray-100 my-1"></div>
             <button onClick={logout} className="w-full text-left flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50">
               <LogOut className="mr-3 h-5 w-5" /><span>Sair</span>

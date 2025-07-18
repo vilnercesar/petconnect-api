@@ -1,37 +1,33 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Header } from '../components/Header';
+import { ClientDashboard } from '../components/dashboards/ClientDashboard';
+import { CollaboratorDashboard } from '../components/dashboards/CollaboratorDashboard';
+import { AdminDashboard } from '../components/dashboards/AdminDashboard';
 
 export const DashboardPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-  const renderRoleDashboard = () => {
-    if (!user) return <p>Carregando dados...</p>;
+  const renderDashboardByRole = () => {
+    if (!user) return <p>Carregando dados do usuário...</p>;
+
     switch (user.role) {
       case 'cliente':
-        return <div>Bem-vindo ao seu painel, Cliente!</div>;
+        return <ClientDashboard user={user} />;
       case 'colaborador':
-        return <div>Bem-vindo ao seu painel, Colaborador!</div>;
+        return <CollaboratorDashboard user={user} />;
       case 'admin':
-        return <div>Bem-vindo ao seu painel, Admin!</div>;
+        return <AdminDashboard user={user} />;
       default:
-        return null;
+        return <p>Seu papel de usuário não tem um painel definido.</p>;
     }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100">
       <Header />
-      <main className="container mx-auto mt-10 px-6">
-        <h1 className="text-3xl font-bold mb-4">Meu Painel</h1>
-        {user ? (
-          <>
-            <p className="mb-4">Olá, <strong>{user.nome_completo}</strong>!</p>
-            {renderRoleDashboard()}
-          </>
-        ) : (
-          <p>Carregando informações do usuário...</p>
-        )}
+      <main className="container mx-auto mt-10 px-6 py-8">
+        {loading ? <p>Carregando...</p> : renderDashboardByRole()}
       </main>
     </div>
   );
