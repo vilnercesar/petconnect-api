@@ -1,12 +1,20 @@
-# React + Vite
+# Frontend - PetConnect App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta pasta contém o código-fonte da interface de usuário do PetConnect, construída com React e Vite.
 
-Currently, two official plugins are available:
+## Detalhes Técnicos
+A aplicação do frontend utiliza uma arquitetura moderna baseada em componentes para criar uma experiência de usuário reativa e dinâmica.
+* **Build Tool:** [Vite](https://vitejs.dev/) para um desenvolvimento rápido com Hot Module Replacement (HMR).
+* **Framework:** [React](https://react.dev/) para a construção da interface.
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/) para um design rápido e responsivo.
+* **Roteamento:** [React Router](https://reactrouter.com/) para a navegação entre as páginas.
+* **Comunicação com API:** [Axios](https://axios-http.com/) para fazer as chamadas HTTP para o backend.
+* **Estado Global:** React Context API (`AuthContext`) para gerir o estado de autenticação do usuário em toda a aplicação.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Estrutura de Pastas do Frontend
+* `src/components`: Contém os componentes reutilizáveis (botões, cabeçalho, dashboards, etc.).
+* `src/pages`: Contém os componentes que representam as páginas completas da aplicação (Login, Cadastro, Perfil, etc.).
+* `src/context`: Contém os providers de contexto, como o `AuthContext`.
+* `src/services`: Contém os ficheiros que encapsulam a lógica de chamadas à API.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+A aplicação estará disponível em `http://localhost:5173`.
