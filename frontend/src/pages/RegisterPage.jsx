@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { registerUser } from '../services/authService';
 import { PawPrint, AlertCircle, CheckCircle } from 'lucide-react';
 
 export const RegisterPage = () => {
@@ -37,7 +37,7 @@ export const RegisterPage = () => {
 
     try {
       // Faz a requisição para a API
-      const response = await axios.post('http://localhost:8000/users/', {
+      await registerUser({
         nome_completo: formData.nome_completo,
         email: formData.email,
         telefone: formData.telefone,

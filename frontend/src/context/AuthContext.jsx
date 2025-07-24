@@ -1,8 +1,11 @@
+
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -15,15 +18,12 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         try {
-          const response = await axios.get('http://localhost:8000/users/me');
+        
+          const response = await axios.get(`${API_URL}/users/me`);
           setUser(response.data);
         } catch (error) {
-          console.error("Sessão inválida, limpando token.", error);
-          
-          localStorage.removeItem('token');
-          setToken(null);
-          setUser(null);
-          delete axios.defaults.headers.common['Authorization'];
+          console.error("Sessão inválida, a limpar token.", error);
+          logout();
         }
       }
       setLoading(false);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       formData.append('password', password);
 
       const response = await axios.post(
-        'http://localhost:8000/auth/token',
+        `${API_URL}/auth/token`,
         formData,
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       setToken(access_token);
       navigate('/dashboard');
     } catch (error) {
-      throw error; // Lança o erro para o componente LoginPage tratar
+      throw error;
     }
   };
 
@@ -58,14 +58,16 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
     navigate('/login');
   };
+
   const refreshUser = (updatedUserData) => {
-      setUser(prevUser => ({
-        ...prevUser,
-        ...updatedUserData,
-      }));
+    setUser(prevUser => ({
+      ...prevUser,
+      ...updatedUserData,
+    }));
   };
+
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, loading,refreshUser  }}>
+    <AuthContext.Provider value={{ token, user, login, logout, loading, refreshUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

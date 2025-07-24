@@ -1,13 +1,12 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/users/me'; 
-
+const BASE_URL = import.meta.env.VITE_API_URL;
+const PROFILE_API_URL = `${BASE_URL}/users/me`;
 /**
  * Atualiza os dados do perfil do usuário.
  * @param {object} userData 
  */
 export const updateUserProfile = (userData) => {
-  return axios.patch(API_URL, userData);
+  return axios.patch(PROFILE_API_URL, userData);
 };
 
 /**
@@ -15,12 +14,12 @@ export const updateUserProfile = (userData) => {
  * @param {object} passwordData
  */
 export const changeUserPassword = (passwordData) => {
-  return axios.post(`${API_URL}/change-password`, passwordData);
+  return axios.post(`${PROFILE_API_URL}/change-password`, passwordData);
 };
 
 /**
  * Deleta a conta do usuário autenticado.
  */
 export const deleteUserAccount = () => {
-  return axios.delete(API_URL);
+  return axios.delete(PROFILE_API_URL);
 };

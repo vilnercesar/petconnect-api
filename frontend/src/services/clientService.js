@@ -1,7 +1,8 @@
 import axios from 'axios';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
-const USERS_API_URL = 'http://localhost:8000/users';
-const REQUESTS_API_URL = 'http://localhost:8000/service-requests';
+const USERS_API_URL = `${BASE_URL}/users`;
+const REQUESTS_API_URL = `${BASE_URL}/service-requests`;
 
 export const getMyRequests = async () => {
     const response = await axios.get(`${REQUESTS_API_URL}/my-requests`);
