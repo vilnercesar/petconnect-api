@@ -19,7 +19,7 @@ services:
     envVars:
     
       - from:
-          type: psql
+          type: postgres
           name: petconnect-db
           property: connectionString
         to: DATABASE_URL
