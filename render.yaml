@@ -1,6 +1,6 @@
 services:
   # Serviço 1: Banco de Dados PostgreSQL
-  - type: psql
+  - type: postgres
     name: petconnect-db
     plan: free 
 
