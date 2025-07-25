@@ -1,9 +1,8 @@
 databases:
   - name: petconnect-db
-    plan: free 
+    plan: free
 
 services:
-  
   - type: web
     name: petconnect-api
     plan: free
@@ -17,14 +16,12 @@ services:
         fromDatabase:
           name: petconnect-db
           property: connectionString
-
       - group: petconnect-secrets
         key: SECRET_KEY
       - group: petconnect-secrets
         key: ALGORITHM
       - group: petconnect-secrets
         key: ACCESS_TOKEN_EXPIRE_MINUTES
-
 
   - type: web
     name: petconnect-frontend
