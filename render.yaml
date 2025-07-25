@@ -1,25 +1,24 @@
 services:
-  # Serviço 1: Banco de Dados PostgreSQL
-  - type: postgres
+
+  - type: psql
     name: petconnect-db
     plan: free 
 
-  # Serviço 2: Backend (API FastAPI)
+
   - type: web
     name: petconnect-api
     plan: free 
     env: docker
-   
+
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
-  
     healthCheck:
       path: /
 
     envVars:
-    
+
       - from:
-          type: postgres
+          type: psql
           name: petconnect-db
           property: connectionString
         to: DATABASE_URL
@@ -30,12 +29,12 @@ services:
       - group: petconnect-secrets
         key: ACCESS_TOKEN_EXPIRE_MINUTES
 
-  # Serviço 3: Frontend 
+
   - type: web
     name: petconnect-frontend
     plan: free
     env: docker
-  
+
     dockerContext: ./frontend
     dockerfilePath: ./frontend/Dockerfile
     build:
