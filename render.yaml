@@ -1,31 +1,23 @@
-# render.yaml - Ficheiro de configuração para o deploy no Render
+databases:
+  - name: petconnect-db
+    plan: free 
 
 services:
-  # Serviço 1: Banco de Dados PostgreSQL
-  - type: psql
-    name: petconnect-db
-    plan: free # Define o plano gratuito para o banco de dados
-
-  # Serviço 2: Backend (API FastAPI)
+  
   - type: web
     name: petconnect-api
-    plan: free # Define o plano gratuito para o serviço web
+    plan: free
     env: docker
-    # Aponta para a localização dos ficheiros do backend
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
-    # Health Check para garantir que a API está pronta antes de aceitar tráfego
     healthCheck:
       path: /
-    # Variáveis de ambiente
     envVars:
-      # Conecta a API ao banco de dados criado acima
-      - from:
-          type: psql
+      - key: DATABASE_URL
+        fromDatabase:
           name: petconnect-db
           property: connectionString
-        to: DATABASE_URL
-      # Importa os segredos do nosso grupo de variáveis de ambiente
+
       - group: petconnect-secrets
         key: SECRET_KEY
       - group: petconnect-secrets
@@ -33,16 +25,13 @@ services:
       - group: petconnect-secrets
         key: ACCESS_TOKEN_EXPIRE_MINUTES
 
-  # Serviço 3: Frontend (React com Docker)
+
   - type: web
     name: petconnect-frontend
     plan: free
     env: docker
-    # Aponta para a localização dos ficheiros do frontend
     dockerContext: ./frontend
     dockerfilePath: ./frontend/Dockerfile
-    # Variáveis de ambiente para o processo de build do frontend
     build:
       args:
-        # Passa a URL pública da nossa API para o frontend durante o build
         VITE_API_URL: ${{services.petconnect-api.url}}
