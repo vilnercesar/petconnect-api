@@ -1,15 +1,22 @@
+# render.yaml - Ficheiro de configuração final para o deploy no Render
+
+# A secção 'databases' é uma lista de topo, separada dos 'services'.
 databases:
   - name: petconnect-db
     plan: free
 
 services:
+  # Serviço 1: Backend (API FastAPI)
   - type: web
     name: petconnect-api
     plan: free
     env: docker
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
-    healthCheckPath: /
+    # A secção 'healthCheck' deve estar indentada para pertencer ao serviço 'web'.
+    healthCheck:
+      path: /
+    # A secção 'envVars' também deve estar indentada.
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -22,12 +29,15 @@ services:
       - group: petconnect-secrets
         key: ACCESS_TOKEN_EXPIRE_MINUTES
 
+  # Serviço 2: Frontend (React com Docker)
   - type: web
     name: petconnect-frontend
     plan: free
     env: docker
     dockerContext: ./frontend
     dockerfilePath: ./frontend/Dockerfile
+    # A secção 'build' deve estar indentada para pertencer ao serviço 'web'.
     build:
       args:
+        # Passa a URL pública da nossa API para o frontend durante o build
         VITE_API_URL: ${{services.petconnect-api.url}}
