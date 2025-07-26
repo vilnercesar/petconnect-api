@@ -30,6 +30,7 @@ app = FastAPI(
 origins = [
     "http://localhost:5173", # Endereço padrão do frontend com Vite/React
     "http://localhost:3000", # Outro endereço comum para desenvolvimento
+    "https://petconnect-x42g.onrender.com", # URL de produção do frontend
 ]
 
 app.add_middleware(
