@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    ADMIN_CREATION_SECRET: str
 
     # Database - agora a URL completa é a prioridade
     DATABASE_URL: Optional[str] = None

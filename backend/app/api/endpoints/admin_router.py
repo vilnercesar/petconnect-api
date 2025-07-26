@@ -1,15 +1,15 @@
-# app/api/endpoints/admin_router.py
-
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Header
 from sqlalchemy.orm import Session
-
+from app.core.config import settings
 from app.core.database import get_db
-from app.models.user import User as UserModel, UserStatus
-from app.schemas.user import User as UserSchema
+from app.models.user import User as UserModel, UserRole, UserStatus
+from app.schemas.user import UserCreate, User as UserSchema
 from app.services import user_services
 from app.schemas.admin import Stats as StatsSchema 
 from app.services import admin_service 
+
+
 router = APIRouter()
 @router.get("/", response_model=list[UserSchema], summary="Lista todos os usuários do sistema")
 
@@ -99,3 +99,33 @@ def get_stats(
     Apenas administradores podem aceder a esta rota.
     """
     return admin_service.get_system_stats(db)
+
+@router.post("/create-first-admin", response_model=UserSchema, summary="Cria o primeiro usuário administrador")
+def create_first_admin(
+    user_in: UserCreate,
+    x_admin_secret: str = Header(...),
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint protegido por um segredo para criar o primeiro admin.
+    Este endpoint deve ser usado apenas uma vez e depois idealmente removido.
+    """
+    # 1. Verifica se a senha mestra está correta
+    if x_admin_secret != settings.ADMIN_CREATION_SECRET:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Segredo de administração inválido.")
+
+    # 2. Garante que o usuário a ser criado é um admin
+    if user_in.role != UserRole.ADMIN:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Este endpoint só pode criar administradores.")
+
+    # 3. Verifica se já existe algum admin no sistema
+    existing_admin = db.query(UserModel).filter(UserModel.role == UserRole.ADMIN).first()
+    if existing_admin:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Um administrador já existe no sistema.")
+
+    # 4. Cria o admin
+    new_admin = user_services.create_user(db=db, user=user_in)
+    new_admin.status = UserStatus.ATIVO
+    db.commit()
+    db.refresh(new_admin)
+    return new_admin
