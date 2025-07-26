@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings 
 
 # Use a URL de conexão do PostgreSQL vinda dos settings
-SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
+SQLALCHEMY_DATABASE_URL = settings.get_database_url()
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
